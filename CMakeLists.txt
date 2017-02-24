@@ -9,10 +9,12 @@ set(SOURCE_FILES
         svm.h
         svm.cpp
         cross_validation_with_matrix_precomputation.h
-        cross_validation_with_matrix_precomputation.c
+        cross_validation_with_matrix_precomputation.cu
         kernel_matrix_calculation.h
-        kernel_matrix_calculation.c
-        Global.h)
+        kernel_matrix_calculation.cu
+        Global.h
+        grid.h
+        grid.cpp)
 
 
 cuda_add_executable(cuda_svm ${SOURCE_FILES} svm-train.c )

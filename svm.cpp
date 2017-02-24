@@ -3331,3 +3331,37 @@ void svm_set_print_string_function(void (*print_func)(const char *))
 	else
 		svm_print_string = print_func;
 }
+
+
+svm_parameter copy_existing_parameter ( const svm_parameter* param )
+{
+    svm_parameter new_param;
+
+    new_param.svm_type = param->svm_type;
+    new_param.kernel_type = param->kernel_type;
+    new_param.degree =param->degree;
+    new_param.gamma = param->gamma;
+    new_param.coef0 = param->coef0;
+    new_param.cache_size = param->cache_size;
+    new_param.eps = param->eps;
+    new_param.C = param->C;
+    new_param.nr_weight = param->nr_weight;
+    new_param.nu = param->nu;
+    new_param.p = param->p;
+    new_param.shrinking = param->shrinking;
+    new_param.probability = param->probability;
+
+    if ( new_param.nr_weight >= 1 )
+    {
+        new_param.weight_label = (int *)malloc(sizeof(int) * new_param.nr_weight);
+        new_param.weight = (double *)malloc(sizeof(double) * new_param.nr_weight);
+
+		for ( int i = 0 ; i < new_param.nr_weight; i++ )
+		{
+			new_param.weight_label[i] = param->weight_label[i];
+			new_param.weight[i] = param->weight[i];
+		}
+    }
+
+    return new_param;
+}

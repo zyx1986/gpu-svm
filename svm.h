@@ -3,9 +3,9 @@
 #define _DENSE_REP
 #define LIBSVM_VERSION 317
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+//#ifdef __cplusplus
+//extern "C" {
+//#endif
 
 extern int libsvm_version;
 
@@ -41,7 +41,9 @@ struct svm_problem
 enum { C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR };	/* svm_type */
 enum { LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED }; /* kernel_type */
 
-typedef struct svm_parameter
+typedef struct svm_parameter svm_parameter;
+
+struct svm_parameter
 {
 	int svm_type;
 	int kernel_type;
@@ -60,7 +62,14 @@ typedef struct svm_parameter
 	double p;	/* for EPSILON_SVR */
 	int shrinking;	/* use the shrinking heuristics */
 	int probability; /* do probability estimates */
-} svm_parameter;
+
+
+};
+
+
+svm_parameter copy_existing_parameter ( const svm_parameter* param );
+
+
 
 //
 // svm_model
@@ -117,8 +126,8 @@ int svm_check_probability_model(const struct svm_model *model);
 
 void svm_set_print_string_function(void (*print_func)(const char *));
 
-#ifdef __cplusplus
-}
-#endif
+//#ifdef __cplusplus
+//}
+//#endif
 
 #endif /* _LIBSVM_H */
