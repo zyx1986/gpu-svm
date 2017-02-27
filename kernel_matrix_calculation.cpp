@@ -36,7 +36,7 @@ void ckm( struct svm_problem *prob, struct svm_problem *pecm, float *gamma  )
 	
 	status = cublasCreate(&handle);
 
-	len_tv = prob-> x[0].dim;
+	len_tv = prob->x[0].dim;
 	ntv   = prob-> l;
 
 	nfa = len_tv * ntv; 

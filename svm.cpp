@@ -3195,7 +3195,7 @@ void svm_destroy_param(svm_parameter* param)
 	free(param->weight);
 }
 
-const char *svm_check_parameter(const svm_problem *prob, const svm_parameter *param)
+const char* svm_check_parameter(const svm_problem *prob, const svm_parameter *param)
 {
 	// svm_type
 

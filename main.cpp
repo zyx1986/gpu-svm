@@ -20,11 +20,34 @@ void test_double_free ()
 }
 
 
+void print_value( int* ptr )
+{
+    std::cout << *ptr << std::endl;
+}
+
+void test_pointer()
+{
+    int* a = new int[5];
+    for ( int i = 0; i < 5; i++ )
+    {
+        a[i] = i;
+    }
+
+    for ( int i = 0; i < 5; i++ )
+    {
+        print_value( &a[i] );
+    }
+}
+
+
+
+
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
-    test_double_free();
+//    test_double_free();
 
+    test_pointer();
 
 
     return 0;

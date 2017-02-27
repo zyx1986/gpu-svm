@@ -8,17 +8,37 @@ find_package(CUDA QUIET REQUIRED)
 set(SOURCE_FILES
         svm.h
         svm.cpp
-        cross_validation_with_matrix_precomputation.h
-        cross_validation_with_matrix_precomputation.cu
-        kernel_matrix_calculation.h
-        kernel_matrix_calculation.cu
         Global.h
+        )
+
+
+#add_compile_options(-D_DENSE_REP)
+
+cuda_add_executable(svm_train
+        ${SOURCE_FILES}
+        cross_validation_with_matrix_precomputation.h
+        cross_validation_with_matrix_precomputation.cpp
+        kernel_matrix_calculation.h
+        kernel_matrix_calculation.cpp
         grid.h
-        grid.cpp)
+        grid.cpp
+        svm-train.cpp)
 
 
-cuda_add_executable(cuda_svm ${SOURCE_FILES} svm-train.c )
-cuda_add_executable(cuda_svm_1 ${SOURCE_FILES} main.cpp )
+add_executable(svm_scale
+        svm-scale.cpp)
 
-cuda_add_cublas_to_target( cuda_svm )
-cuda_add_cublas_to_target( cuda_svm_1 )
+add_executable(svm_predict
+        ${SOURCE_FILES}
+        svm-predict.cpp)
+
+add_executable(svm_test main.cpp )
+
+
+target_compile_definitions(svm_train PUBLIC _DENSE_REP=1)
+cuda_add_cublas_to_target( svm_train )
+
+
+
+
+

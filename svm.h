@@ -1,6 +1,7 @@
 #ifndef _LIBSVM_H
 #define _LIBSVM_H
-#define _DENSE_REP
+
+//#define _DENSE_REP 1
 #define LIBSVM_VERSION 317
 
 //#ifdef __cplusplus
@@ -22,7 +23,6 @@ typedef struct svm_problem
 	double *y;
 	struct svm_node *x;
 } svm_problem;
-
 #else
 struct svm_node
 {
@@ -38,6 +38,8 @@ struct svm_problem
 };
 #endif
 
+
+
 enum { C_SVC, NU_SVC, ONE_CLASS, EPSILON_SVR, NU_SVR };	/* svm_type */
 enum { LINEAR, POLY, RBF, SIGMOID, PRECOMPUTED }; /* kernel_type */
 
@@ -48,13 +50,13 @@ struct svm_parameter
 	int svm_type;
 	int kernel_type;
 	int degree;	/* for poly */
-	double gamma;	/* for poly/rbf/sigmoid */
+	double gamma;	/* for poly/rbf/sigmoid, = 1/num_features by default*/
 	double coef0;	/* for poly/sigmoid */
 
 	/* these are for training only */
 	double cache_size; /* in MB */
 	double eps;	/* stopping criteria */
-	double C;	/* for C_SVC, EPSILON_SVR and NU_SVR */
+	double C;	/* for C_SVC, EPSILON_SVR and NU_SVR, = 1 by default */
 	int nr_weight;		/* for C_SVC */
 	int *weight_label;	/* for C_SVC */
 	double* weight;		/* for C_SVC */
@@ -121,7 +123,7 @@ void svm_free_model_content(struct svm_model *model_ptr);
 void svm_free_and_destroy_model(struct svm_model **model_ptr_ptr);
 void svm_destroy_param(struct svm_parameter *param);
 
-const char *svm_check_parameter(const struct svm_problem *prob, const struct svm_parameter *param);
+const char* svm_check_parameter(const svm_problem *prob, const svm_parameter *param);
 int svm_check_probability_model(const struct svm_model *model);
 
 void svm_set_print_string_function(void (*print_func)(const char *));
