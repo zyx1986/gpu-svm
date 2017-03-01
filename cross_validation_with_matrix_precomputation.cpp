@@ -106,11 +106,15 @@ double run_pair(struct svm_problem * p_km, svm_problem* prob, svm_parameter* par
 
 	cal_km( p_km, prob, param );
 
+	int original_kernel_type = param->kernel_type;
+
 	param->kernel_type = PRECOMPUTED;
 
 	rate = do_crossvalidation(p_km, prob, param, nr_fold);
 
 	printf("Cross Validation = %g%%\n", rate);
+
+	param->kernel_type = original_kernel_type;
 
 	return rate;
 

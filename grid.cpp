@@ -4,11 +4,11 @@
 #include "grid.h"
 #include "cross_validation_with_matrix_precomputation.h"
 #include <algorithm>
-
+#include <iostream>
 
 
 // return the best svm parameter
-svm_parameter* get_best_parameter_set_from_cross_validation(
+svm_parameter get_best_parameter_set_from_cross_validation(
         svm_problem* prob, svm_parameter* param, int nr_fold, int num_parameter_sets ) {
     double best_rate = -1;
     int best_rate_index = -1;
@@ -21,7 +21,16 @@ svm_parameter* get_best_parameter_set_from_cross_validation(
         }
     }
 
-    return &param[best_rate_index];
+    std::cout << "best c = " << param[best_rate_index].C << std::endl;
+    std::cout << "best g = " << param[best_rate_index].gamma << std::endl;
+    std::cout << "best rate = " << best_rate << std::endl;
+
+
+    for (int i = 0; i < num_parameter_sets; i++) {
+        std::cout << "set " << i << " " << param[i] << std::endl;
+    }
+
+    return param[best_rate_index];
 }
 
 
@@ -31,7 +40,7 @@ svm_parameter* get_best_parameter_set_from_cross_validation(
  *
  */
 std::pair<svm_parameter*, int> set_parameters(
-        svm_parameter *param,
+        const svm_parameter& param,
         double log_c_min, double log_c_max, double log_c_step,
         double log_g_min, double log_g_max, double log_g_step)
 {

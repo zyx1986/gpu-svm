@@ -133,6 +133,7 @@ int main(int argc, char **argv)
 
     std::cout << std::endl;
     std::cout << "safe exit" << std::endl;
+    std::cout << "kernel type = " << param.kernel_type << std::endl;
 	return 0;
 }
 

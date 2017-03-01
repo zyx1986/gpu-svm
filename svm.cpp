@@ -7,6 +7,7 @@
 #include <stdarg.h>
 #include <limits.h>
 #include <locale.h>
+#include <iostream>
 
 #include "svm.h"
 int libsvm_version = LIBSVM_VERSION;
@@ -2158,9 +2159,18 @@ static void svm_group_classes(const svm_problem *prob, int *nr_class_ret, int **
 //
 svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 {
+
+//    std::cout << "best c = " << param->C << std::endl;
+//    std::cout << "best g = " << param->gamma << std::endl;
+
 	svm_model *model = Malloc(svm_model,1);
 	model->param = *param;
+
+//	model->param = copy_existing_parameter(param);
 	model->free_sv = 0;	// XXX
+
+	std::cout << "svm_problem.l = " << prob->l << std::endl;
+
 
 	if(param->svm_type == ONE_CLASS ||
 	   param->svm_type == EPSILON_SVR ||
@@ -3333,23 +3343,23 @@ void svm_set_print_string_function(void (*print_func)(const char *))
 }
 
 
-svm_parameter copy_existing_parameter ( const svm_parameter* param )
+svm_parameter copy_existing_parameter ( const svm_parameter& param )
 {
     svm_parameter new_param;
 
-    new_param.svm_type = param->svm_type;
-    new_param.kernel_type = param->kernel_type;
-    new_param.degree =param->degree;
-    new_param.gamma = param->gamma;
-    new_param.coef0 = param->coef0;
-    new_param.cache_size = param->cache_size;
-    new_param.eps = param->eps;
-    new_param.C = param->C;
-    new_param.nr_weight = param->nr_weight;
-    new_param.nu = param->nu;
-    new_param.p = param->p;
-    new_param.shrinking = param->shrinking;
-    new_param.probability = param->probability;
+    new_param.svm_type = param.svm_type;
+    new_param.kernel_type = param.kernel_type;
+    new_param.degree =param.degree;
+    new_param.gamma = param.gamma;
+    new_param.coef0 = param.coef0;
+    new_param.cache_size = param.cache_size;
+    new_param.eps = param.eps;
+    new_param.C = param.C;
+    new_param.nr_weight = param.nr_weight;
+    new_param.nu = param.nu;
+    new_param.p = param.p;
+    new_param.shrinking = param.shrinking;
+    new_param.probability = param.probability;
 
     if ( new_param.nr_weight >= 1 )
     {
@@ -3358,10 +3368,20 @@ svm_parameter copy_existing_parameter ( const svm_parameter* param )
 
 		for ( int i = 0 ; i < new_param.nr_weight; i++ )
 		{
-			new_param.weight_label[i] = param->weight_label[i];
-			new_param.weight[i] = param->weight[i];
+			new_param.weight_label[i] = param.weight_label[i];
+			new_param.weight[i] = param.weight[i];
 		}
     }
 
     return new_param;
+}
+
+
+std::ostream &operator<<(std::ostream &os, const svm_parameter &parameter) {
+	os << "svm_type: " << parameter.svm_type << " kernel_type: " << parameter.kernel_type << " degree: "
+	   << parameter.degree << " gamma: " << parameter.gamma << " coef0: " << parameter.coef0 << " cache_size: "
+	   << parameter.cache_size << " eps: " << parameter.eps << " C: " << parameter.C << " nr_weight: "
+	   << parameter.nr_weight << " nu: " << parameter.nu << " p: " << parameter.p << " shrinking: " << parameter.shrinking << " probability: "
+	   << parameter.probability;
+	return os;
 }

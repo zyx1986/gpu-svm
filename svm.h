@@ -2,6 +2,8 @@
 #define _LIBSVM_H
 
 //#define _DENSE_REP 1
+#include <ostream>
+
 #define LIBSVM_VERSION 317
 
 //#ifdef __cplusplus
@@ -56,6 +58,8 @@ struct svm_parameter
 	/* these are for training only */
 	double cache_size; /* in MB */
 	double eps;	/* stopping criteria */
+	friend std::ostream &operator<<(std::ostream &os, const svm_parameter &parameter);
+
 	double C;	/* for C_SVC, EPSILON_SVR and NU_SVR, = 1 by default */
 	int nr_weight;		/* for C_SVC */
 	int *weight_label;	/* for C_SVC */
@@ -65,11 +69,10 @@ struct svm_parameter
 	int shrinking;	/* use the shrinking heuristics */
 	int probability; /* do probability estimates */
 
-
 };
 
 
-svm_parameter copy_existing_parameter ( const svm_parameter* param );
+svm_parameter copy_existing_parameter ( const svm_parameter& param );
 
 
 
