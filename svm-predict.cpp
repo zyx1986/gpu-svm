@@ -5,7 +5,7 @@
 #include <errno.h>
 #include "svm.h"
 
-//#ifdef _SPARSE_REP
+
 
 int print_null(const char *s,...) {return 0;}
 

@@ -57,7 +57,7 @@ void exit_input_error(int line_num)
 }
 
 void parse_command_line(int argc, char **argv, char *input_file_name, char *model_file_name);
-void read_problem(const char *filename);
+int read_problem(const char *filename);
 void do_cross_validation();
 
 struct svm_parameter param;		// set by parse_command_line
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
     const char *error_msg;
 
     parse_command_line(argc, argv, input_file_name, model_file_name);
-    read_problem(input_file_name);
+    int dim = read_problem(input_file_name);
     error_msg = svm_check_parameter(&prob,&param);
     if(error_msg)
     {
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 
     // train the data set using the best parameter
 //    model = svm_train(&prob, &best_param);
-    model = svm_train(&prob, &param);
+    model = svm_train(&prob, &param, dim);
 
 
     if(svm_save_model(model_file_name, model))
@@ -314,7 +314,7 @@ void parse_command_line(int argc, char **argv, char *input_file_name, char *mode
 
 // read in a problem (in svmlight format)
 
-void read_problem(const char *filename)
+int read_problem(const char *filename)
 {
     int elements, max_index, inst_max_index, i, j;
 #ifdef _DENSE_REP
@@ -497,4 +497,6 @@ void read_problem(const char *filename)
 #endif
         }
     fclose(fp);
+
+    return max_index;
 }

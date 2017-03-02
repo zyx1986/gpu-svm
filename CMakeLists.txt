@@ -35,6 +35,13 @@ add_executable(svm_predict
         ${SOURCE_FILES}
         svm-predict.cpp)
 
+
+add_executable(svm_predict_dense
+        ${SOURCE_FILES}
+        svm_predict_dense.cpp)
+
+
+
 add_executable(svm_test main.cpp )
 
 

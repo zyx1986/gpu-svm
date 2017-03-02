@@ -6,9 +6,6 @@
 
 #define LIBSVM_VERSION 317
 
-//#ifdef __cplusplus
-//extern "C" {
-//#endif
 
 extern int libsvm_version;
 
@@ -26,18 +23,18 @@ typedef struct svm_problem
 	struct svm_node *x;
 } svm_problem;
 #else
-struct svm_node
+typedef struct svm_node
 {
 	int index;
 	double value;
-};
+} svm_node;
 
-struct svm_problem
+typedef struct svm_problem
 {
 	int l;
 	double *y;
 	struct svm_node **x;
-};
+} svm_problem;
 #endif
 
 
@@ -103,9 +100,13 @@ typedef struct svm_model
 	/* XXX */
 	int free_sv;		/* 1 if svm_model is created by svm_load_model*/
 				/* 0 if svm_model is created by svm_train */
+
+    int dim = -1;    /* the dimensionality of the data */
 } svm_model ;
 
+
 struct svm_model *svm_train(const struct svm_problem *prob, const struct svm_parameter *param);
+struct svm_model *svm_train(const struct svm_problem *prob, const struct svm_parameter *param, int dim);
 void svm_cross_validation(const struct svm_problem *prob, const struct svm_parameter *param, int nr_fold, double *target);
 
 int svm_save_model(const char *model_file_name, const struct svm_model *model);
@@ -131,8 +132,6 @@ int svm_check_probability_model(const struct svm_model *model);
 
 void svm_set_print_string_function(void (*print_func)(const char *));
 
-//#ifdef __cplusplus
-//}
-//#endif
+
 
 #endif /* _LIBSVM_H */
