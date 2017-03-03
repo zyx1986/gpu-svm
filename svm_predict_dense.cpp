@@ -8,14 +8,15 @@
 #include <string.h>
 #include <errno.h>
 #include "svm.h"
-
+#include "Global.h"
 
 
 int print_null(const char *s,...) {return 0;}
 
 static int (*info)(const char *fmt,...) = &printf;
 
-struct svm_node *x;
+// using the dense representation
+struct svm_node x;
 int max_nr_attr = 64;
 
 struct svm_model* model;
@@ -55,6 +56,12 @@ void predict(FILE *input, FILE *output)
     double error = 0;
     double sump = 0, sumt = 0, sumpp = 0, sumtt = 0, sumpt = 0;
 
+
+    int dim = svm_get_dim(model);
+    x.values = Malloc(double, dim);
+
+
+
     int svm_type=svm_get_svm_type(model);
     int nr_class=svm_get_nr_class(model);
     double *prob_estimates=NULL;
@@ -81,7 +88,6 @@ void predict(FILE *input, FILE *output)
     line = (char *)malloc(max_line_len*sizeof(char));
     while(readline(input) != NULL)
     {
-        int i = 0;
         double target_label, predict_label;
         char *idx, *val, *label, *endptr;
         int inst_max_index = -1; // strtol gives 0 if wrong format, and precomputed kernel has <index> start from 0
@@ -94,38 +100,46 @@ void predict(FILE *input, FILE *output)
         if(endptr == label || *endptr != '\0')
             exit_input_error(total+1);
 
+
+        int currentIdx;
+        double value;
+        int *d;
+        // reset x.dim
+        x.dim = 0;
+
         while(1)
         {
-            if(i>=max_nr_attr-1)	// need one more for index = -1
-            {
-                max_nr_attr *= 2;
-                x = (struct svm_node *) realloc(x,max_nr_attr*sizeof(struct svm_node));
-            }
-
             idx = strtok(NULL,":");
             val = strtok(NULL," \t");
 
             if(val == NULL)
                 break;
-            errno = 0;
-            x[i].index = (int) strtol(idx,&endptr,10);
-            if(endptr == idx || errno != 0 || *endptr != '\0' || x[i].index <= inst_max_index)
-                exit_input_error(total+1);
-            else
-                inst_max_index = x[i].index;
 
             errno = 0;
-            x[i].value = strtod(val,&endptr);
+            currentIdx = (int) strtol(idx,&endptr,10);
+            if(endptr == idx || errno != 0 || *endptr != '\0' || currentIdx <= inst_max_index)
+                exit_input_error(total+1);
+            else
+                inst_max_index = currentIdx;
+
+            errno = 0;
+            value = strtod(val,&endptr);
+
             if(endptr == val || errno != 0 || (*endptr != '\0' && !isspace(*endptr)))
                 exit_input_error(total+1);
 
-            ++i;
+            d = &(x.dim);
+            while (*d < currentIdx)
+            {
+                x.values[(*d)++] = 0.0;
+            }
+            x.values[(*d)++] = value;
+
         }
-        x[i].index = -1;
 
         if (predict_probability && (svm_type==C_SVC || svm_type==NU_SVC))
         {
-            predict_label = svm_predict_probability(model, x, prob_estimates);
+            predict_label = svm_predict_probability(model, &x, prob_estimates);
             fprintf(output,"%g",predict_label);
             for(j=0;j<nr_class;j++)
                 fprintf(output," %g",prob_estimates[j]);
@@ -133,7 +147,7 @@ void predict(FILE *input, FILE *output)
         }
         else
         {
-            predict_label = svm_predict(model, x);
+            predict_label = svm_predict(model, &x);
             fprintf(output,"%g\n",predict_label);
         }
 
@@ -220,7 +234,6 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    x = (struct svm_node *) malloc(max_nr_attr*sizeof(struct svm_node));
     if(predict_probability)
     {
         if(svm_check_probability_model(model)==0)
@@ -237,7 +250,7 @@ int main(int argc, char **argv)
 
     predict(input,output);
     svm_free_and_destroy_model(&model);
-    free(x);
+    free(x.values);
     free(line);
     fclose(input);
     fclose(output);

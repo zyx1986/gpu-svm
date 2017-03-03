@@ -2835,6 +2835,12 @@ void svm_cross_validation(const svm_problem *prob, const svm_parameter *param, i
 }
 
 
+int svm_get_dim(const svm_model *model)
+{
+    return model->dim;
+}
+
+
 int svm_get_svm_type(const svm_model *model)
 {
 	return model->param.svm_type;

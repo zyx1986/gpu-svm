@@ -12,8 +12,6 @@ set(SOURCE_FILES
         )
 
 
-#add_compile_options(-D_DENSE_REP)
-
 cuda_add_executable(svm_train
         ${SOURCE_FILES}
         cross_validation_with_matrix_precomputation.h
@@ -39,7 +37,7 @@ add_executable(svm_predict
 add_executable(svm_predict_dense
         ${SOURCE_FILES}
         svm_predict_dense.cpp)
-
+target_compile_definitions(svm_predict_dense PRIVATE _DENSE_REP=1)
 
 
 add_executable(svm_test main.cpp )
@@ -56,7 +54,7 @@ cuda_add_executable(svm_cv_train
         grid.cpp
         svm-cv-train.cpp)
 
-target_compile_definitions(svm_cv_train PUBLIC _DENSE_REP=1)
+target_compile_definitions(svm_cv_train PRIVATE _DENSE_REP=1)
 cuda_add_cublas_to_target( svm_cv_train )
 
 
