@@ -125,13 +125,10 @@ int main(int argc, char **argv)
     svm_parameter best_param = get_best_parameter_set_from_cross_validation(
             &prob, parameter_set.first, nr_fold, parameter_set.second );
 
-    std::cout << std::endl;
-    std::cout << param << std::endl;
-    std::cout << best_param << std::endl;
+
 
     // train the data set using the best parameter
-//    model = svm_train(&prob, &best_param);
-    model = svm_train(&prob, &param, dim);
+    model = svm_train(&prob, &best_param, dim);
 
 
     if(svm_save_model(model_file_name, model))
@@ -361,7 +358,7 @@ int read_problem(const char *filename)
 	for(i=0;i<prob.l;i++)
 	{
 		int *d;
-		(prob.x+i)->values = Malloc(double,elements);
+		(prob.x+i)->values = Malloc( double, elements - 1 );
 		(prob.x+i)->dim = 0;
 
 		inst_max_index = -1; // strtol gives 0 if wrong format, and precomputed kernel has <index> start from 0
@@ -393,7 +390,7 @@ int read_problem(const char *filename)
 				exit_input_error(i+1);
 
 			d = &((prob.x+i)->dim);
-			while (*d < j)
+			while (*d < j - 1)
 				(prob.x+i)->values[(*d)++] = 0.0;
 			(prob.x+i)->values[(*d)++] = value;
 		}

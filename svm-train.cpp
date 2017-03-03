@@ -340,8 +340,8 @@ int read_problem(const char *filename)
 
 	for(i=0;i<prob.l;i++)
 	{
-		int *d; 
-		(prob.x+i)->values = Malloc(double,elements);
+		int *d;
+        (prob.x+i)->values = Malloc(double,elements - 1);
 		(prob.x+i)->dim = 0;
 
 		inst_max_index = -1; // strtol gives 0 if wrong format, and precomputed kernel has <index> start from 0
@@ -373,7 +373,8 @@ int read_problem(const char *filename)
 				exit_input_error(i+1);
 
 			d = &((prob.x+i)->dim);
-			while (*d < j)
+
+            while (*d < j - 1)
 				(prob.x+i)->values[(*d)++] = 0.0;
 			(prob.x+i)->values[(*d)++] = value;
 		}	

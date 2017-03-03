@@ -129,7 +129,8 @@ void predict(FILE *input, FILE *output)
                 exit_input_error(total+1);
 
             d = &(x.dim);
-            while (*d < currentIdx)
+
+            while (*d < currentIdx - 1)
             {
                 x.values[(*d)++] = 0.0;
             }

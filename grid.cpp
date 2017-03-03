@@ -25,11 +25,6 @@ svm_parameter get_best_parameter_set_from_cross_validation(
     std::cout << "best g = " << param[best_rate_index].gamma << std::endl;
     std::cout << "best rate = " << best_rate << std::endl;
 
-
-    for (int i = 0; i < num_parameter_sets; i++) {
-        std::cout << "set " << i << " " << param[i] << std::endl;
-    }
-
     return param[best_rate_index];
 }
 
